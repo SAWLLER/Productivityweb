@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <title>Productivity Timer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(90deg, rgb(0, 0, 0) 43%, rgb(54, 50, 50) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center vertically */
+            align-items: center; /* Center horizontally */
+            height: 100vh; /* Full viewport height */
+        }
+        nav {
+            background-color: #3c2753;
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            text-align: center;
+        }
+        nav button {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            color: rgb(0, 0, 0);
+            background-color: transparent;
+            border: 2px solid #563a6c;
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        nav button:hover {
+            background-color: #563a6c;
+            color: rgb(0, 0, 0);
+        }
+        .timer-container {
+            width: 330px;
+            padding: 20px;
+            background-color: #69418e;
+            border: solid 18px #282B49;
+            border-radius: 30px;
+            text-align: center; /* Center text inside the timer container */
+        }
+        .timer-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+            color: #c8a6e9;
+        }
+        .start-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 18px;
+            border: solid 3px #3c2753;
+            border-radius: 30px;
+            background-color: #69418e;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .start-btn:hover {
+            background-color: rgb(0, 0, 0);
+            color: #c8a6e9;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <button onclick="location.href='index.html'">Quiz</button>
+        <button onclick="location.href='yourrat.html'">Your Rat</button>
+        <button onclick="location.href='todolist.html'">To Do List</button>
+        <button onclick="location.href='timer.html'">Timer</button>
+    </nav>
+
+    <div class="timer-container">
+        <h1 class="timer-title">Timer</h1>
+        <button class="start-btn">Start Timer</button>
+        <!-- Add your timer functionality here -->
+    </div>
+
+    <script>
+        // Add your timer logic here
+    </script>
+</body>
+</html>
