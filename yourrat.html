@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <title>Productivity Rat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: url('images/productivity_rat_backdrop.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        nav {
+            background-color: #ff0000;
+            padding: 15px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        nav button {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            color: rgb(0, 0, 0);
+            background-color: transparent;
+            border: 2px solid #000000;
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav button:hover {
+            background-color: #ff0000;
+            color: rgb(0, 0, 0);
+        }
+
+        .container {
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .rat-display-container,
+        .button-container {
+            margin: 0 20px;
+            padding: 40px;
+            height: auto;
+            width: 400px;
+            background-color: #ffffff;
+            border: solid 18px #000000;
+            border-radius: 30px;
+            text-align: center;
+        }
+
+        .rat-name {
+            font-size: 25px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .rat-image {
+            width: 300px;
+            margin: 20px 0;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .button-container button {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            color: rgb(0, 0, 0);
+            background-color: transparent;
+            border: 2px solid #000000;
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            width: 80%;
+        }
+
+        .button-container button:hover {
+            background-color: #ff0000;
+            color: rgb(0, 0, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <button onclick="location.href='timer.html'">Productivity Timer</button>
+        <button onclick="location.href='yourrat.html'">Your Rat</button>
+        <button onclick="location.href='index.html'">Quiz</button>
+        <button onclick="location.href='todolist.html'">To Do List</button>
+    </nav>
+
+    <div class="container">
+        <div class="rat-display-container" id="rat-display" style="display:none;">
+            <h2 class="rat-name" id="display-user-name"></h2>
+            <h2 class="rat-name" id="display-rat-name"></h2>
+            <img src="images/Normal rat.png" alt="Normal Rat" class="rat-image" id="rat-image">
+        </div>
+
+        <div class="button-container" id="button-container" style="display:none;">
+            <button onclick="changeRatImage('images/Emorat.png')">Emo rat</button>
+            <button onclick="changeRatImage('images/Normal rat.png')">1960s commercial rat</button>
+            <button onclick="changeRatImage('images/Normal rat.png')">Wine Mom rat</button>
+            <button onclick="changeRatImage('images/Normal rat.png')">Gyaru rat</button>
+            <button onclick="changeRatImage('images/Normal rat.png')">Rat 5</button>
+            <button onclick="changeRatImage('images/Normal rat.png')">Rat 6</button>
+            <button onclick="changeRatImage('images/Normal rat.png')">Rat 7</button>
+            <button onclick="changeRatImage('images/Normal rat.png')">Rat 8</button>
+            <button onclick="changeRatImage('images/Normal rat.png')">Normal rat</button>
+            <button onclick="changeRatImage('images/Normal rat.png')">SecretRoom Rat</button>
+        </div>
+
+        <div class="quiz-app" id="quiz-app">
+            <h1>Welcome to Productivity Rat!</h1>
+            <label for="user-name">Enter your name:</label>
+            <input type="text" id="user-name" class="time-input" placeholder="Your Name" required>
+            <br>
+            <label for="rat-name">What do you want to name your rat?</label>
+            <input type="text" id="rat-name" class="time-input" placeholder="Rat Name" required>
+            <br>
+            <button class="start-btn" id="submit-btn">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        // Check if user data and rat image are already stored in localStorage
+        window.onload = function() {
+            const storedUserName = localStorage.getItem('userName');
+            const storedRatName = localStorage.getItem('ratName');
+            const storedRatImage = localStorage.getItem('ratImage') || 'images/Normal rat.png'; // Default to Normal rat if not set
+
+            if (storedUserName && storedRatName) {
+                document.getElementById('display-user-name').textContent = `Welcome ${storedUserName}!`;
+                document.getElementById('display-rat-name').textContent = `${storedRatName} is so happy to see you!`;
+                document.getElementById('rat-image').src = storedRatImage; // Set stored rat image
+                document.querySelector('.quiz-app').style.display = 'none';
+                document.getElementById('rat-display').style.display = 'block';
+                document.getElementById('button-container').style.display = 'block'; // Show button container
+            }
+        };
+
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            const userName = document.getElementById('user-name').value;
+            const ratName = document.getElementById('rat-name').value;
+
+            // Save the names to localStorage
+            localStorage.setItem('userName', userName);
+            localStorage.setItem('ratName', ratName);
+
+            // Display the names and the rat image
+            document.getElementById('display-user-name').textContent = `Welcome ${userName}!`;
+            document.getElementById('display-rat-name').textContent = `${ratName} is so excited!`;
+
+            // Hide the input form and show the rat display and button container
+            document.querySelector('.quiz-app').style.display = 'none';
+            document.getElementById('rat-display').style.display = 'block';
+            document.getElementById('button-container').style.display = 'block'; // Show button container
+        });
+
+        function changeRatImage(imageSrc) {
+            document.getElementById('rat-image').src = imageSrc;
+            localStorage.setItem('ratImage', imageSrc); // Save selected rat image to localStorage
+        }
+    </script>
+</body>
+
+</html>

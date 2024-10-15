@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <title>Productivity Rat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: url('images/productivity_rat_backdrop.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        nav {
+            background-color: #ff0000;
+            padding: 15px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        nav button {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            color: rgb(0, 0, 0);
+            background-color: transparent;
+            border: 2px solid #000000;
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav button:hover {
+            background-color: #ff0000;
+            color: rgb(0, 0, 0);
+        }
+
+        .container {
+            margin-top: 100px; /* Adding margin to push content below the nav */
+            text-align: center;
+        }
+
+        .quiz-app {
+            margin: 0 auto; /* Center the quiz box horizontally */
+            padding: 40px; /* Increased padding */
+            height: auto;
+            width: 500px; /* Increased width */
+            background-color: #ffffff;
+            border: solid 18px #000000;
+            border-radius: 30px;
+            text-align: center;
+        }
+
+        .xp-container {
+            margin-top: 20px;
+        }
+
+        .xp-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background-color: #ff0000;
+            width: 0;
+            transition: width 0.3s;
+        }
+
+        .xp-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: 1px solid #000;
+            border-radius: 5px;
+            padding: 5px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .todo-container {
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            border: solid 1px #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            display: block; /* Set to block to show the todo container */
+        }
+
+        .todo-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .todo-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            cursor: grab; /* Change cursor for draggable items */
+            border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+            margin: 5px 0; /* Optional: Add margin between tasks */
+            background-color: #fff; /* Optional: Background color for tasks */
+            border-radius: 5px; /* Optional: Rounded corners */
+        }
+
+        .todo-list li:active {
+            cursor: grabbing; /* Change cursor when dragging */
+        }
+
+        .todo-input {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .add-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff0000;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .add-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray; /* Change color for completed tasks */
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <button onclick="location.href='timer.html'">Productivity Timer</button>
+        <button onclick="location.href='yourrat.html'">Your Rat</button>
+        <button onclick="location.href='index.html'">Quiz</button>
+        <button onclick="location.href='todolist.html'">To Do List</button>
+    </nav>
+
+    <div class="container">
+        <div class="quiz-app">
+            <h1>To Do List</h1>
+            <div class="todo-container">
+                <input type="text" class="todo-input" id="todo-input" placeholder="Add a new task...">
+                <button class="add-btn" id="add-btn">Add</button>
+                <ul class="todo-list" id="todo-list"></ul>
+            </div>
+
+            <div class="xp-container">
+                <div class="xp-bar">
+                    <div class="xp-fill" id="xp-fill"></div>
+                    <div class="xp-tooltip" id="xp-tooltip">Get to the next level to get a surprise</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let xpPoints = 0;
+        const xpToNextLevel = 100; // XP required to reach the next level
+
+        document.addEventListener('DOMContentLoaded', loadTasks);
+
+        document.getElementById('add-btn').addEventListener('click', function () {
+            const input = document.getElementById('todo-input');
+            const taskText = input.value.trim();
+
+            if (taskText) {
+                addTask(taskText);
+                input.value = ''; // Clear the input field
+            } else {
+                alert('Please enter a task!');
+            }
+        });
+
+        // Load tasks from local storage
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
+            tasks.forEach(task => {
+                addTask(task.text, task.completed);
+            });
+        }
+
+        // Add task to the list and local storage
+        function addTask(taskText, completed = false) {
+            const listItem = document.createElement('li');
+
+            // Create a checkbox
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'task-checkbox';
+            checkbox.checked = completed;
+            if (completed) {
+                listItem.classList.add('completed');
+            }
+            checkbox.addEventListener('change', function () {
+                if (this.checked) {
+                    listItem.classList.add('completed');
+                    updateXP(10); // Add XP for completing a task
+                } else {
+                    listItem.classList.remove('completed');
+                    updateXP(-10); // Subtract XP if unchecked (optional)
+                }
+                saveTasks(); // Update local storage
+            });
+
+            listItem.appendChild(checkbox);
+            listItem.appendChild(document.createTextNode(taskText));
+
+            // Create delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.innerText = 'Delete';
+            deleteButton.className = 'delete-btn';
+            deleteButton.onclick = function () {
+                listItem.remove();
+                saveTasks(); // Update local storage
+            };
+
+            listItem.appendChild(deleteButton);
+            listItem.setAttribute('draggable', true); // Make the item draggable
+
+            // Event listeners for drag and drop
+            listItem.addEventListener('dragstart', function (e) {
+                e.dataTransfer.setData('text/plain', null); // Required for Firefox
+                e.dataTransfer.effectAllowed = 'move';
+                this.classList.add('dragging');
+            });
+
+            listItem.addEventListener('dragend', function () {
+                this.classList.remove('dragging');
+            });
+
+            document.getElementById('todo-list').appendChild(listItem);
+            saveTasks(); // Save tasks to local storage
+        }
+
+        // Save tasks to local storage
+        function saveTasks() {
+            const tasks = [];
+            document.querySelectorAll('.todo-list li').forEach(item => {
+                const taskText = item.childNodes[1].textContent;
+                const completed = item.querySelector('.task-checkbox').checked;
+                tasks.push({ text: taskText, completed: completed });
+            });
+            localStorage.setItem('todoTasks', JSON.stringify(tasks));
+        }
+
+        function updateXP(points) {
+            xpPoints += points;
+            const xpFill = document.getElementById('xp-fill');
+            const percentage = (xpPoints / xpToNextLevel) * 100;
+            xpFill.style.width = percentage + '%';
+
+            // Check for level up
+            if (xpPoints >= xpToNextLevel) {
+                // Redirect to secretroom.html
+                window.location.href = 'secretroom.html';
+            }
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Tooltip hover effect
+        const xpBar = document.querySelector('.xp-bar');
+        const xpTooltip = document.getElementById('xp-tooltip');
+
+        xpBar.addEventListener('mouseenter', function () {
+            xpTooltip.style.display = 'block';
+        });
+
+        xpBar.addEventListener('mouseleave', function () {
+            xpTooltip.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>

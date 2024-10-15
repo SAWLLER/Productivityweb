@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,15 +11,16 @@
             margin: 0;
             padding: 0;
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(90deg, rgb(0, 0, 0) 43%, rgb(54, 50, 50) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Center vertically */
-            align-items: center; /* Center horizontally */
+            background: url('images/productivity_rat_backdrop.png') no-repeat center center fixed;
+            background-size: cover;
             height: 100vh; /* Full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Center the timer both vertically and horizontally */
         }
+
         nav {
-            background-color: #3c2753;
+            background-color: #ff0000;
             padding: 15px;
             position: fixed;
             top: 0;
@@ -26,73 +28,209 @@
             z-index: 100;
             text-align: center;
         }
+
         nav button {
             font-family: 'Montserrat', sans-serif;
             font-weight: 500;
             font-size: 16px;
             color: rgb(0, 0, 0);
             background-color: transparent;
-            border: 2px solid #563a6c;
+            border: 2px solid #000000;
             border-radius: 20px;
             padding: 10px 20px;
             margin: 5px;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
         }
+
         nav button:hover {
-            background-color: #563a6c;
+            background-color: #ff0000;
             color: rgb(0, 0, 0);
         }
+
         .timer-container {
-            width: 330px;
-            padding: 20px;
-            background-color: #69418e;
-            border: solid 18px #282B49;
+            width: 500px; /* Keep width */
+            padding: 40px;
+            background-color: #ffffff;
+            border: solid 18px #000000;
             border-radius: 30px;
             text-align: center; /* Center text inside the timer container */
+            height: 400px; /* Increased height to fit the timer */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Optional shadow */
         }
+
         .timer-title {
             font-family: 'Montserrat', sans-serif;
             font-weight: 900;
-            font-size: 24px;
-            color: #c8a6e9;
+            font-size: 48px; 
+            color: #000000;
+            margin-top: 0px; 
         }
-        .start-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
+
+        .time-input {
+            font-size: 18px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid #000;
+            border-radius: 10px;
+        }
+
+        .action-btn {
+            margin-top: 20px; /* Adjusted for spacing */
+            padding: 15px 30px; /* Made button a bit larger */
             font-family: 'Montserrat', sans-serif;
             font-weight: 500;
-            font-size: 18px;
-            border: solid 3px #3c2753;
+            font-size: 24px; /* Increased font size */
+            border: solid 3px #000000;
             border-radius: 30px;
-            background-color: #69418e;
+            background-color: #ffffff;
             color: rgb(0, 0, 0);
             cursor: pointer;
             outline: none;
             transition: background-color 0.3s, color 0.3s;
         }
-        .start-btn:hover {
-            background-color: rgb(0, 0, 0);
-            color: #c8a6e9;
+
+        .action-btn:hover {
+            background-color: rgb(255, 1, 1);
+            color: #ff0000;
+            font-weight: 200;
+        }
+
+        .timer-display {
+            font-size: 48px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
         }
     </style>
 </head>
+
 <body>
     <nav>
         <button onclick="location.href='index.html'">Quiz</button>
         <button onclick="location.href='yourrat.html'">Your Rat</button>
         <button onclick="location.href='todolist.html'">To Do List</button>
-        <button onclick="location.href='timer.html'">Timer</button>
+        <button onclick="location.href='timer.html'">Productivity Timer</button>
     </nav>
 
-    <div class="timer-container">
-        <h1 class="timer-title">Timer</h1>
-        <button class="start-btn">Start Timer</button>
-        <!-- Add your timer functionality here -->
+    <div class="timer-container" id="timer-container">
+        <h1 class="timer-title">Productivity Timer</h1>
+        <label for="work-time">Work Time (minutes):</label>
+        <input type="number" class="time-input" id="work-time" placeholder="25" min="1">
+        <label for="break-time">Break(minutes):</label>
+        <input type="number" class="time-input" id="break-time" placeholder="5" min="1">
+        
+        <div id="button-container">
+            <button class="action-btn" id="start-btn">Start Timer</button>
+            <button class="action-btn" id="pause-btn" style="display: none;">Pause Timer</button>
+            <button class="action-btn" id="stop-btn" style="display: none;">Stop Timer</button>
+        </div>
+        
+        <div class="timer-display" id="timer-display" style="display: none;">00:00</div>
+        <div class="message" id="message" style="display: none;"></div>
     </div>
 
     <script>
-        // Add your timer logic here
+        let workTime, breakTime;
+        let timerInterval;
+        let timeLeft;
+        let isBreak = false;
+        let isPaused = false;
+
+        document.getElementById('start-btn').addEventListener('click', function () {
+            workTime = parseInt(document.getElementById('work-time').value) || 25;
+            breakTime = parseInt(document.getElementById('break-time').value) || 5;
+
+            // Calculate time in seconds
+            timeLeft = workTime * 60;
+            isBreak = false;
+
+            // Reset display
+            document.getElementById('timer-display').style.display = 'block';
+            document.getElementById('message').style.display = 'none';
+            document.getElementById('timer-display').textContent = formatTime(timeLeft);
+
+            // Start the timer
+            startTimer();
+            toggleButtons('start');
+        });
+
+        document.getElementById('pause-btn').addEventListener('click', function () {
+            if (isPaused) {
+                startTimer();
+            } else {
+                clearInterval(timerInterval);
+            }
+            isPaused = !isPaused;
+            toggleButtons('pause');
+        });
+
+        document.getElementById('stop-btn').addEventListener('click', function () {
+            clearInterval(timerInterval);
+            resetTimer();
+            toggleButtons('stop');
+        });
+
+        function startTimer() {
+            timerInterval = setInterval(function () {
+                timeLeft--;
+                document.getElementById('timer-display').textContent = formatTime(timeLeft);
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    isBreak = !isBreak;
+                    timeLeft = isBreak ? breakTime * 60 : workTime * 60;
+                    document.getElementById('message').textContent = isBreak ? "Break Time!" : "Work Time!";
+                    document.getElementById('message').style.display = 'block';
+                    startTimer();
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            timeLeft = 0;
+            document.getElementById('timer-display').textContent = formatTime(timeLeft);
+            document.getElementById('timer-display').style.display = 'none';
+            document.getElementById('message').style.display = 'none';
+            isPaused = false;
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        function toggleButtons(action) {
+            const startBtn = document.getElementById('start-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const stopBtn = document.getElementById('stop-btn');
+
+            if (action === 'start') {
+                startBtn.style.display = 'none';
+                pauseBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'inline-block';
+            } else if (action === 'pause') {
+                startBtn.style.display = 'none';
+                pauseBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'inline-block';
+                if (isPaused) {
+                    pauseBtn.textContent = 'Resume Timer';
+                } else {
+                    pauseBtn.textContent = 'Pause Timer';
+                }
+            } else if (action === 'stop') {
+                startBtn.style.display = 'inline-block';
+                pauseBtn.style.display = 'none';
+                stopBtn.style.display = 'none';
+            }
+        }
     </script>
 </body>
+
 </html>

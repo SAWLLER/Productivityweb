@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,10 +11,12 @@
             margin: 0;
             padding: 0;
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(90deg, rgb(0, 0, 0) 43%, rgb(54, 50, 50) 100%);
+            background: url('images/productivity_rat_backdrop.png') no-repeat center center fixed;
+            background-size: cover;
         }
+
         nav {
-            background-color: #3c2753;
+            background-color: #ff0000;
             padding: 15px;
             text-align: center;
             position: fixed;
@@ -21,52 +24,96 @@
             width: 100%;
             z-index: 100;
         }
+
         nav button {
             font-family: 'Montserrat', sans-serif;
             font-weight: 500;
-            font-size: 16px;
+            font-size: 18px; /* Increased font size */
             color: rgb(0, 0, 0);
             background-color: transparent;
-            border: 2px solid #563a6c;
+            border: 2px solid #000000;
             border-radius: 20px;
             padding: 10px 20px;
             margin: 5px;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
         }
+
         nav button:hover {
-            background-color: #563a6c;
+            background-color: #ff0000;
             color: rgb(0, 0, 0);
         }
+
         .container {
-            margin-top: 100px; /* Adding margin to push content below the nav */
+            margin-top: 100px;
             text-align: center;
         }
+
         .quiz-app {
-            margin: 0 auto; /* Center the quiz box horizontally */
-            padding: 20px;
+            margin: 0 auto;
+            padding: 40px;
             height: auto;
-            width: 330px;
-            background-color: #69418e;
-            border: solid 18px #282B49;
+            width: 500px;
+            background-color: #ffffff;
+            border: solid 18px #000000;
             border-radius: 30px;
             text-align: center;
         }
+
+        .start-btn,
+        .btn,
+        #next {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 18px; /* Increased font size */
+            color: rgb(0, 0, 0);
+            background-color: transparent;
+            border: 2px solid #000000;
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .start-btn:hover,
+        .btn:hover,
+        #next:hover {
+            background-color: #ff0000;
+            color: rgb(0, 0, 0);
+        }
+
+        #question {
+            font-size: 24px; /* Increased font size */
+        }
+
+        .choices {
+            font-size: 20px; /* Increased font size */
+        }
+
+        .result {
+            font-size: 24px; /* Increased font size */
+        }
+
+        .Congrats! {
+            font-size: 24px; /* Increased font size */
+        }
     </style>
 </head>
+
 <body>
     <nav>
         <button onclick="location.href='timer.html'">Productivity Timer</button>
-        <button onclick="location.href='#'">Your Rat</button>
-        <button onclick="location.href='#quiz-screen'">Quiz</button>
-        <button onclick="location.href='#'">To Do List</button>
+        <button onclick="location.href='yourrat.html'">Your Rat</button>
+        <button onclick="location.href='index.html'">Quiz</button>
+        <button onclick="location.href='todolist.html'">To Do List</button>
     </nav>
 
     <div class="container">
         <div class="quiz-app">
             <div class="start" id="start" style="display: block;">
-                <img src="images/2080878.png" height="120px" width="120px" class="il"/>
-                <h1 class="app">Rat quiz</h1>
+                <img src="images/Normal rat.png" height="120px" width="120px" class="il" />
+                <h1 class="app" style="font-size: 36px;">Rat Quiz</h1> <!-- Increased font size -->
                 <button class="start-btn" id="start-btn">Start Quiz</button>
             </div>
 
@@ -90,130 +137,134 @@
             </div>
 
             <div class="result" id="resultScreen" style="display:none;">
-                <img src="images/res.png" height="120px" width="120px" class="il"/>
-                <h1 class="app">Score: <span id="score">6</span></h1>
+                <img id="result-image" src="images/Normal rat.png" height="120px" width="120px" class="il" />
+                <p id="Congrats!"></p> <!-- Added element for result message -->
             </div>
         </div>
     </div>
 
     <script>
-      var currentQuestion = 0;
-      var cQuestion = document.getElementById('currentQuestion');
-      var totalQuestions = document.getElementById('totalQuestions');
-      var splashScreen = document.getElementById('start');
-      var quizScreen = document.getElementById('quiz-screen');
-      var resultScreen = document.getElementById('resultScreen');
-      var question = document.getElementById('question');
-      var opt1 = document.getElementById('opt1');
-      var opt2 = document.getElementById('opt2');
-      var opt3 = document.getElementById('opt3');
-      var opt4 = document.getElementById('opt4');
-      var opt5 = document.getElementById('opt5');
-      var next = document.getElementById('next');
-      var responses = [];
+        var currentQuestion = 0;
+        var cQuestion = document.getElementById('currentQuestion');
+        var totalQuestions = document.getElementById('totalQuestions');
+        var splashScreen = document.getElementById('start');
+        var quizScreen = document.getElementById('quiz-screen');
+        var resultScreen = document.getElementById('resultScreen');
+        var question = document.getElementById('question');
+        var opt1 = document.getElementById('opt1');
+        var opt2 = document.getElementById('opt2');
+        var opt3 = document.getElementById('opt3');
+        var opt4 = document.getElementById('opt4');
+        var opt5 = document.getElementById('opt5');
+        var next = document.getElementById('next');
+        var responses = [];
 
-      var quizQuestions = [
-        {
-          question: "In your spare time, what do you like to do most?",
-          choice1: "Read/Write",
-          choice2: "Watch a show/movie",
-          choice3: "Go hang out with friends",
-          choice4: "Commit murder",
-          choice5: "Sew or Bake",
-        },
-        {
-          question: "Your favorite color",
-          choice1: "Pink",
-          choice2: "Green",
-          choice3: "Yellow",
-          choice4: "Red",
-          choice5: "Blue",
-        },
-        {
-          question: "Favorite writing item",
-          choice1: "Pen",
-          choice2: "Pencil",
-          choice3: "Highlighter",
-          choice4: "Quill",
-          choice5: "Blood of your enemies",
-        },
-        {
-          question: "What type of music do you like?",
-          choice1: "Pop",
-          choice2: "Rock",
-          choice3: "Country",
-          choice4: "Musicals",
-          choice5: "Anything that's popular",
-        },
-        {
-          question: "Favorite drink",
-          choice1: "Blood",
-          choice2: "Soda",
-          choice3: "Water",
-          choice4: "Lemonade",
-          choice5: "Wine",
-        }
-      ];
+        var quizQuestions = [
+            {
+                question: "In your spare time, what do you like to do most?",
+                choice1: "Read",
+                choice2: "Watch something",
+                choice3: "Hang out with friends",
+                choice4: "Commit murder",
+                choice5: "Sew or Bake",
+            },
+            {
+                question: "Your favorite color",
+                choice1: "Pink",
+                choice2: "Green",
+                choice3: "Yellow",
+                choice4: "Red",
+                choice5: "Blue",
+            },
+            {
+                question: "Favorite thing to write with",
+                choice1: "Pen",
+                choice2: "Pencil",
+                choice3: "Highlighter",
+                choice4: "Quill",
+                choice5: "Blood of your enemies"
+            },
+            {
+                question: "What type of music do you like?",
+                choice1: "Pop",
+                choice2: "Rock",
+                choice3: "Country",
+                choice4: "Musicals",
+                choice5: "Anything that's popular"
+            },
+            {
+                question: "Favorite drink",
+                choice1: "Blood",
+                choice2: "Soda",
+                choice3: "Water",
+                choice4: "Lemonade",
+                choice5: "Wine"
+            }
+        ];
 
-      function nextQuestion(no) {
-        cQuestion.textContent = " " + (no + 1);
-        totalQuestions.textContent = " " + quizQuestions.length;
-        question.textContent = quizQuestions[no].question;
-        opt1.textContent = quizQuestions[no].choice1;
-        opt2.textContent = quizQuestions[no].choice2;
-        opt3.textContent = quizQuestions[no].choice3;
-        opt4.textContent = quizQuestions[no].choice4;
-        opt5.textContent = quizQuestions[no].choice5;
+        function nextQuestion(no) {
+            cQuestion.textContent = " " + (no + 1);
+            totalQuestions.textContent = " " + quizQuestions.length;
+            question.textContent = quizQuestions[no].question;
+            opt1.textContent = quizQuestions[no].choice1;
+            opt2.textContent = quizQuestions[no].choice2;
+            opt3.textContent = quizQuestions[no].choice3;
+            opt4.textContent = quizQuestions[no].choice4;
+            opt5.textContent = quizQuestions[no].choice5;
 
-        // Reset the next button visibility
-        next.style.display = 'none';
-      }
-
-      document.getElementById("start-btn").addEventListener("click", function() {
-        splashScreen.style.display = "none";
-        quizScreen.style.display = "block";
-        nextQuestion(0);
-      });
-
-      var buttons = document.getElementsByClassName('btn');
-      for (var i = 0; i < buttons.length; i++) {
-        buttons[i].onclick = function () {
-          responses.push(this.textContent);
-          // Show the next button after an answer is selected
-          next.style.display = 'block';
-        };
-      }
-
-      next.addEventListener("click", function() {
-        if (currentQuestion < quizQuestions.length - 1) {
-          currentQuestion++;
-          nextQuestion(currentQuestion);
-        } else {
-          showResults();
-        }
-      });
-
-      function showResults() {
-        quizScreen.style.display = "none";
-        resultScreen.style.display = "block";
-
-        var resultMessage = "";
-
-        if (responses.includes("Commit murder") || responses.includes("Blood") || responses.includes("Rock")) {
-          resultMessage = "You got the suspicious rat";
-        } else if (responses.includes("Pink") || responses.includes("Go hang out with friends") || responses.includes("Highlighter") || responses.includes("Anything that's popular")) {
-          resultMessage = "You got the gyaru rat";
-        } else if (responses.includes("Quill") || responses.includes("Sew or bake") || responses.includes("Wine") || responses.includes("Country")) {
-          resultMessage = "You got the 1960 commercial rat";
-        } else if (responses.includes("Wine") || responses.includes("Blood") || responses.includes("Read/Write")) {
-          resultMessage = "You got the Wine mom rat";
-        } else {
-          resultMessage = "Congrats you are part of the 1% that got the normal rat";
+            next.style.display = 'none';
         }
 
-        document.getElementById('score').textContent = resultMessage;
-      }
+        document.getElementById("start-btn").addEventListener("click", function () {
+            splashScreen.style.display = "none";
+            quizScreen.style.display = "block";
+            nextQuestion(0);
+        });
+
+        var buttons = document.getElementsByClassName('btn');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].onclick = function () {
+                responses.push(this.textContent);
+                next.style.display = 'block';
+            };
+        }
+
+        next.addEventListener("click", function () {
+            if (currentQuestion < quizQuestions.length - 1) {
+                currentQuestion++;
+                nextQuestion(currentQuestion);
+            } else {
+                showResults();
+            }
+        });
+
+        function showResults() {
+            quizScreen.style.display = "none";
+            resultScreen.style.display = "block";
+            var resultMessage = "";
+
+            // Reset image
+            var resultImage = document.getElementById('result-image');
+            resultImage.src = "images/Normal rat.png"; // Default image
+
+            if (responses.includes("Commit murder") || responses.includes("Blood")) {
+                resultMessage = "You got the Suspicious Rat";
+
+            } else if (responses.includes("Pink") || responses.includes("Hang out with friends")) {
+                resultMessage = "You got the Gyaru rat";
+
+            } else if (responses.includes("Quill") || responses.includes("Sew or bake")) {
+                resultMessage = "You got the 1960 commercial rat";
+            } else if (responses.includes("Wine")) {
+                resultMessage = "You got the Wine mom rat";
+            } else if (responses.includes("Black") || responses.includes("Monster")) {
+                resultMessage = "You got the Emo rat";
+            } else {
+                resultMessage = "Congrats you are part of the 1% that got the normal rat";
+            }
+
+            document.getElementById('Congrats!').textContent = resultMessage;
+        }
     </script>
 </body>
 </html>
-
