@@ -99,6 +99,20 @@
             background-color: #ff0000;
             color: rgb(0, 0, 0);
         }
+
+        .input-container {
+            margin: 20px auto;
+            padding: 20px;
+            width: 350px;
+            background-color: #ffffff;
+            border: solid 5px #000000;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .start-btn {
+            margin-top: 15px;
+        }
     </style>
 </head>
 
@@ -132,13 +146,15 @@
 
         <div class="quiz-app" id="quiz-app">
             <h1>Welcome to Productivity Rat!</h1>
-            <label for="user-name">Enter your name:</label>
-            <input type="text" id="user-name" class="time-input" placeholder="Your Name" required>
-            <br>
-            <label for="rat-name">What do you want to name your rat?</label>
-            <input type="text" id="rat-name" class="time-input" placeholder="Rat Name" required>
-            <br>
-            <button class="start-btn" id="submit-btn">Submit</button>
+            <div class="input-container">
+                <label for="user-name">Enter your name:</label>
+                <input type="text" id="user-name" class="time-input" placeholder="Your Name" required>
+                <br>
+                <label for="rat-name">What do you want to name your rat?</label>
+                <input type="text" id="rat-name" class="time-input" placeholder="Rat Name" required>
+                <br>
+                <button class="start-btn" id="submit-btn">Submit</button>
+            </div>
         </div>
     </div>
 
